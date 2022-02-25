@@ -1,4 +1,4 @@
-- 👋 Hi, I’m Antonio Bernabe @Paack, just that...
+No need to hurry. No need to sparkle. No need to be anybody but oneself.
 
 <!---
 antonio-bernabe-paack/antonio-bernabe-paack is a ✨ special ✨ repository because its `README.md` (this file) appears on your GitHub profile.
