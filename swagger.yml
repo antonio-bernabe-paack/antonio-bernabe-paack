@@ -1,0 +1,2312 @@
+openapi: 3.0.0
+info:
+  title: routing-manager
+  version: 1.0.0
+  description: Current routing manager API
+  contact:
+    name: Davide Lovison
+    email: davide.lovison@paack.co
+servers:
+  - url: 'http://localhost:4073'
+paths:
+  '/datasets/{dataset-id}':
+    get:
+      tags:
+        - Datasets
+      summary: Get Dataset by ID
+      parameters:
+        - name: Content-Transfer-Encoding
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dataset'
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                type: string
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                type: string
+    parameters:
+      - schema:
+          type: string
+        name: dataset-id
+        in: path
+        required: true
+  /datasets:
+    post:
+      summary: Create Dataset
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDatasetDTO'
+        description: ''
+      parameters: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                type: string
+      tags:
+        - Datasets
+    get:
+      summary: Get Dataset by Tags
+      parameters:
+        - name: date
+          in: query
+          schema:
+            type: string
+          example: 12-12-2012
+        - schema:
+            type: string
+          in: query
+          name: city
+        - schema:
+            type: string
+          in: query
+          name: warehouse
+        - schema:
+            type: string
+          in: query
+          name: region
+        - schema:
+            type: string
+          in: query
+          name: operation
+        - schema:
+            type: string
+          in: query
+          name: country
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Dataset'
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                type: string
+      tags:
+        - Datasets
+    parameters: []
+  /configs:
+    post:
+      summary: Create Config
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateConfigDTO'
+      parameters: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                type: string
+      tags:
+        - Configs
+    parameters: []
+  '/configs/{config-id}':
+    get:
+      summary: Get Config by ID
+      parameters:
+        - name: Content-Transfer-Encoding
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Config'
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                type: string
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                type: string
+      tags:
+        - Configs
+    parameters:
+      - schema:
+          type: string
+        name: config-id
+        in: path
+        required: true
+  /algorithms:
+    post:
+      summary: Create Algorithm
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAlgorithmDTO'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                type: string
+      tags:
+        - Algorithms
+    get:
+      summary: Get All Algorithms
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Algorithm'
+      tags:
+        - Algorithms
+    parameters: []
+  '/executions/{execution-id}':
+    get:
+      summary: Get Execution By ID
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Execution'
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                type: string
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                type: string
+      tags:
+        - Executions
+    parameters:
+      - schema:
+          type: string
+        name: execution-id
+        in: path
+        required: true
+  /executions:
+    get:
+      summary: GET Executions
+      tags:
+        - Executions
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Execution'
+      operationId: get-executions
+  '/executions/{execution-id}/cancel':
+    parameters:
+      - schema:
+          type: string
+        name: execution-id
+        in: path
+        required: true
+    post:
+      summary: CANCEL an Execution
+      operationId: post-executions-execution-id-cancel
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Execution'
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                type: string
+        '500':
+          description: Internal Server Error
+          content:
+            text/plain:
+              schema:
+                type: string
+      tags:
+        - Executions
+  '/executions/{execution-id}/routes':
+    parameters:
+      - schema:
+          type: string
+        name: execution-id
+        in: path
+        required: true
+    get:
+      summary: GET Execution routes
+      tags:
+        - Executions
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Route'
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                type: string
+        '500':
+          description: Internal Server Error
+          content:
+            text/plain:
+              schema:
+                type: string
+      operationId: get-executions-execution-id-routes
+  '/executions/{execution-id}/request':
+    parameters:
+      - schema:
+          type: string
+        name: execution-id
+        in: path
+        required: true
+    get:
+      summary: GET Execution request
+      tags:
+        - Executions
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    orders:
+                      - key: order_10001
+                        cargos:
+                          - key: cargo_0
+                            capacity: {}
+                        demands:
+                          - key: order_10001_demand_pickup
+                            demand_type: PICKUP
+                            target_cargos:
+                              - cargo_0
+                            possible_events:
+                              - duration: 0
+                                time_window:
+                                  to: '2021-09-21T23:59:59Z'
+                                  from: '2021-09-21T00:00:00Z'
+                                location_key: location_WH
+                            precedence_in_trip: 1
+                          - key: order_10001_demand_delivery
+                            demand_type: DROP
+                            target_cargos:
+                              - cargo_0
+                            possible_events:
+                              - duration: 5
+                                time_window:
+                                  to: '2021-09-21T18:00:00Z'
+                                  from: '2021-09-21T14:00:00Z'
+                                location_key: location_41.3749000_2.1537460
+                            precedence_in_trip: 2
+                    shifts:
+                      - key: performer-shift_0
+                        tariff:
+                          constraints:
+                            - stage_length: 480
+                              cost_per_unit: 0
+                          cost_per_shift: 2000
+                        shift_type: PERFORMER
+                        resource_key: performer_0
+                        working_time:
+                          to: '2021-09-21T22:00:00Z'
+                          from: '2021-09-21T08:00:00Z'
+                        max_locations: 4
+                        availability_time:
+                          to: '2021-09-21T23:59:59Z'
+                          from: '2021-09-21T00:00:00Z'
+                        start_location_key: location_WH
+                      - key: transport-shift_0
+                        tariff:
+                          constraints:
+                            - stage_length: 100000000
+                              cost_per_unit: 0.01
+                          cost_per_shift: 1000
+                        shift_type: TRANSPORT
+                        resource_key: transport_0
+                        working_time:
+                          to: '2021-09-21T22:00:00Z'
+                          from: '2021-09-21T08:00:00Z'
+                        max_locations: 4
+                        availability_time:
+                          to: '2021-09-21T23:59:59Z'
+                          from: '2021-09-21T00:00:00Z'
+                        start_location_key: location_WH
+                    settings:
+                      result_ttl: 120
+                      assumptions:
+                        toll_roads: true
+                        traffic_jams: true
+                      configuration: optimize_locality_grouping
+                      planning_time: 180
+                    hardlinks:
+                      - key: hardlink-shift-0
+                        links:
+                          - type: SHIFT
+                            entity_key: transport-shift_0
+                          - type: SHIFT
+                            entity_key: performer-shift_0
+                    locations:
+                      - key: location_41.3749000_2.1537460
+                        location:
+                          latitude: 41.3749
+                          longitude: 2.153746
+                          arrival_duration: 0
+                          departure_duration: 0
+                      - key: location_WH
+                        location:
+                          latitude: 41.339631187207594
+                          longitude: 2.130208649490328
+                          arrival_duration: 0
+                          departure_duration: 0
+                    performers:
+                      - key: performer_0
+                    transports:
+                      - key: transport_0
+                        boxes:
+                          - key: order_box_%!s(int=0)
+                            capacity:
+                              capacity_x: 10
+                properties:
+                  orders:
+                    type: array
+                    uniqueItems: true
+                    items:
+                      type: object
+                      properties:
+                        key:
+                          type: string
+                        cargos:
+                          type: array
+                          uniqueItems: true
+                          items:
+                            type: object
+                            properties:
+                              key:
+                                type: string
+                              capacity:
+                                type: object
+                            required:
+                              - key
+                        demands:
+                          type: array
+                          uniqueItems: true
+                          items:
+                            type: object
+                            properties:
+                              key:
+                                type: string
+                              demand_type:
+                                type: string
+                              target_cargos:
+                                type: array
+                                items:
+                                  type: object
+                              possible_events:
+                                type: array
+                                uniqueItems: true
+                                items:
+                                  type: object
+                                  properties:
+                                    duration:
+                                      type: number
+                                    time_window:
+                                      type: object
+                                      properties:
+                                        to:
+                                          type: string
+                                          minLength: 1
+                                        from:
+                                          type: string
+                                          minLength: 1
+                                      required:
+                                        - to
+                                        - from
+                                    location_key:
+                                      type: string
+                                      minLength: 1
+                                  required:
+                                    - duration
+                                    - location_key
+                              precedence_in_trip:
+                                type: number
+                            required:
+                              - key
+                              - demand_type
+                              - precedence_in_trip
+                      required:
+                        - key
+                  shifts:
+                    type: array
+                    uniqueItems: true
+                    items:
+                      type: object
+                      properties:
+                        key:
+                          type: string
+                          minLength: 1
+                        tariff:
+                          type: object
+                          properties:
+                            constraints:
+                              type: array
+                              uniqueItems: true
+                              items:
+                                type: object
+                                properties:
+                                  stage_length:
+                                    type: number
+                                  cost_per_unit:
+                                    type: number
+                                required:
+                                  - stage_length
+                                  - cost_per_unit
+                            cost_per_shift:
+                              type: number
+                          required:
+                            - constraints
+                            - cost_per_shift
+                        shift_type:
+                          type: string
+                        resource_key:
+                          type: string
+                          minLength: 1
+                        working_time:
+                          type: object
+                          properties:
+                            to:
+                              type: string
+                            from:
+                              type: string
+                          required:
+                            - to
+                            - from
+                        max_locations:
+                          type: number
+                        availability_time:
+                          type: object
+                          properties:
+                            to:
+                              type: string
+                            from:
+                              type: string
+                          required:
+                            - to
+                            - from
+                        start_location_key:
+                          type: string
+                      required:
+                        - key
+                        - shift_type
+                        - resource_key
+                        - max_locations
+                        - start_location_key
+                  settings:
+                    type: object
+                    required:
+                      - result_ttl
+                      - assumptions
+                      - configuration
+                      - planning_time
+                    properties:
+                      result_ttl:
+                        type: number
+                      assumptions:
+                        type: object
+                        required:
+                          - toll_roads
+                          - traffic_jams
+                        properties:
+                          toll_roads:
+                            type: boolean
+                          traffic_jams:
+                            type: boolean
+                      configuration:
+                        type: string
+                      planning_time:
+                        type: number
+                  hardlinks:
+                    type: array
+                    uniqueItems: true
+                    items:
+                      type: object
+                      properties:
+                        key:
+                          type: string
+                          minLength: 1
+                        links:
+                          type: array
+                          uniqueItems: true
+                          minItems: 1
+                          items:
+                            type: object
+                            properties:
+                              type:
+                                type: string
+                              entity_key:
+                                type: string
+                            required:
+                              - type
+                              - entity_key
+                      required:
+                        - key
+                  locations:
+                    type: array
+                    uniqueItems: true
+                    items:
+                      type: object
+                      properties:
+                        key:
+                          type: string
+                        location:
+                          type: object
+                          properties:
+                            latitude:
+                              type: number
+                            longitude:
+                              type: number
+                            arrival_duration:
+                              type: number
+                            departure_duration:
+                              type: number
+                          required:
+                            - latitude
+                            - longitude
+                            - arrival_duration
+                            - departure_duration
+                      required:
+                        - key
+                  performers:
+                    type: array
+                    uniqueItems: true
+                    items:
+                      type: object
+                      properties:
+                        key:
+                          type: string
+                      required:
+                        - key
+                  transports:
+                    type: array
+                    uniqueItems: true
+                    items:
+                      type: object
+                      properties:
+                        key:
+                          type: string
+                        boxes:
+                          type: array
+                          uniqueItems: true
+                          items:
+                            type: object
+                            properties:
+                              key:
+                                type: string
+                              capacity:
+                                type: object
+                                properties:
+                                  capacity_x:
+                                    type: number
+                                required:
+                                  - capacity_x
+                            required:
+                              - key
+                      required:
+                        - key
+                required:
+                  - orders
+                  - shifts
+                  - settings
+                  - hardlinks
+                  - locations
+                  - performers
+                  - transports
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                type: string
+        '500':
+          description: Internal Server Error
+          content:
+            text/plain:
+              schema:
+                type: string
+      operationId: get-executions-execution-id-requests
+  '/executions/{execution-id}/result':
+    parameters:
+      - schema:
+          type: string
+        name: execution-id
+        in: path
+        required: true
+    get:
+      summary: GET Execution result
+      tags:
+        - Executions
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    info:
+                      status: FINISHED_IN_TIME
+                      waiting_time: 0
+                      planning_time: 0
+                      result_version: 67
+                    trips:
+                      - key: trip_performer-shift_0
+                        actions:
+                          - todolist:
+                              - job_time: '2021-09-21T13:49:00Z'
+                                job_type: LOCATION_ARRIVAL
+                              - job_time: '2021-09-21T13:49:00Z'
+                                job_type: READY_TO_WORK
+                              - job_time: '2021-09-21T13:49:00Z'
+                                job_type: START_WORK
+                              - job_time: '2021-09-21T13:49:00Z'
+                                job_type: FINISH_WORK
+                              - job_time: '2021-09-21T13:49:00Z'
+                                job_type: LOCATION_DEPARTURE
+                            order_key: order_10001
+                            demand_key: order_10001_demand_pickup
+                            location_key: location_WH
+                          - todolist:
+                              - job_time: '2021-09-21T14:00:00Z'
+                                job_type: LOCATION_ARRIVAL
+                              - job_time: '2021-09-21T14:00:00Z'
+                                job_type: READY_TO_WORK
+                              - job_time: '2021-09-21T14:00:00Z'
+                                job_type: START_WORK
+                              - job_time: '2021-09-21T14:05:00Z'
+                                job_type: FINISH_WORK
+                              - job_time: '2021-09-21T14:05:00Z'
+                                job_type: LOCATION_DEPARTURE
+                            order_key: order_10001
+                            demand_key: order_10001_demand_delivery
+                            location_key: location_41.3749000_2.1537460
+                        assigned_shifts:
+                          - shift_key: performer-shift_0
+                            shift_time:
+                              to: '2021-09-21T14:05:00Z'
+                              from: '2021-09-21T13:49:00Z'
+                          - shift_key: transport-shift_0
+                            shift_time:
+                              to: '2021-09-21T14:05:00Z'
+                              from: '2021-09-21T13:49:00Z'
+                        start_location_key: location_WH
+                    tracedata:
+                      code: >-
+                        paack_LssTestingV3_LastmileServicePlanner_2021-10-14-13-51_c2b872cd-650b-41bf-8297-c884a6733e01
+                    statistics:
+                      trips_statistics:
+                        - trip_key: trip_performer-shift_0
+                          stop_statistics:
+                            - location:
+                                latitude: 41.339631187207594
+                                longitude: 2.130208649490328
+                                arrival_duration: 0
+                                departure_duration: 0
+                              demand_ids:
+                                - order_10001#order_10001_demand_pickup
+                              location_key: location_WH
+                              measurements:
+                                distance: 0
+                                total_time: 0
+                                time_window:
+                                  to: '2021-09-21T13:49:00Z'
+                                  from: '2021-09-21T13:49:00Z'
+                                driving_time: 0
+                                waiting_time: 0
+                                working_time: 0
+                                arriving_time: 0
+                                departure_time: 0
+                            - location:
+                                latitude: 41.3749
+                                longitude: 2.153746
+                                arrival_duration: 0
+                                departure_duration: 0
+                              demand_ids:
+                                - order_10001#order_10001_demand_delivery
+                              location_key: location_41.3749000_2.1537460
+                              measurements:
+                                distance: 6833
+                                total_time: 16
+                                time_window:
+                                  to: '2021-09-21T14:05:00Z'
+                                  from: '2021-09-21T14:00:00Z'
+                                driving_time: 11
+                                waiting_time: 0
+                                working_time: 5
+                                arriving_time: 0
+                                departure_time: 0
+                properties:
+                  info:
+                    type: object
+                    required:
+                      - status
+                      - waiting_time
+                      - planning_time
+                      - result_version
+                    properties:
+                      status:
+                        type: string
+                      waiting_time:
+                        type: number
+                      planning_time:
+                        type: number
+                      result_version:
+                        type: number
+                  trips:
+                    type: array
+                    uniqueItems: true
+                    items:
+                      type: object
+                      properties:
+                        key:
+                          type: string
+                          minLength: 1
+                        actions:
+                          type: array
+                          uniqueItems: true
+                          items:
+                            type: object
+                            properties:
+                              todolist:
+                                type: array
+                                uniqueItems: true
+                                minItems: 1
+                                items:
+                                  type: object
+                                  properties:
+                                    job_time:
+                                      type: string
+                                      minLength: 1
+                                    job_type:
+                                      type: string
+                                      minLength: 1
+                                  required:
+                                    - job_time
+                                    - job_type
+                              order_key:
+                                type: string
+                                minLength: 1
+                              demand_key:
+                                type: string
+                                minLength: 1
+                              location_key:
+                                type: string
+                                minLength: 1
+                            required:
+                              - order_key
+                              - demand_key
+                              - location_key
+                        assigned_shifts:
+                          type: array
+                          uniqueItems: true
+                          items:
+                            type: object
+                            properties:
+                              shift_key:
+                                type: string
+                              shift_time:
+                                type: object
+                                properties:
+                                  to:
+                                    type: string
+                                    minLength: 1
+                                  from:
+                                    type: string
+                                    minLength: 1
+                                required:
+                                  - to
+                                  - from
+                            required:
+                              - shift_key
+                        start_location_key:
+                          type: string
+                      required:
+                        - key
+                        - start_location_key
+                  tracedata:
+                    type: object
+                    required:
+                      - code
+                    properties:
+                      code:
+                        type: string
+                        minLength: 1
+                  statistics:
+                    type: object
+                    required:
+                      - trips_statistics
+                    properties:
+                      trips_statistics:
+                        type: array
+                        uniqueItems: true
+                        minItems: 1
+                        items:
+                          type: object
+                          properties:
+                            trip_key:
+                              type: string
+                              minLength: 1
+                            stop_statistics:
+                              type: array
+                              uniqueItems: true
+                              minItems: 1
+                              items:
+                                type: object
+                                properties:
+                                  location:
+                                    type: object
+                                    properties:
+                                      latitude:
+                                        type: number
+                                      longitude:
+                                        type: number
+                                      arrival_duration:
+                                        type: number
+                                      departure_duration:
+                                        type: number
+                                    required:
+                                      - latitude
+                                      - longitude
+                                      - arrival_duration
+                                      - departure_duration
+                                  demand_ids:
+                                    type: array
+                                    items:
+                                      type: object
+                                  location_key:
+                                    type: string
+                                    minLength: 1
+                                  measurements:
+                                    type: object
+                                    properties:
+                                      distance:
+                                        type: number
+                                      total_time:
+                                        type: number
+                                      time_window:
+                                        type: object
+                                        required:
+                                          - to
+                                          - from
+                                        properties:
+                                          to:
+                                            type: string
+                                            minLength: 1
+                                          from:
+                                            type: string
+                                            minLength: 1
+                                      driving_time:
+                                        type: number
+                                      waiting_time:
+                                        type: number
+                                      working_time:
+                                        type: number
+                                      arriving_time:
+                                        type: number
+                                      departure_time:
+                                        type: number
+                                    required:
+                                      - distance
+                                      - total_time
+                                      - time_window
+                                      - driving_time
+                                      - waiting_time
+                                      - working_time
+                                      - arriving_time
+                                      - departure_time
+                                required:
+                                  - location_key
+                          required:
+                            - trip_key
+                required:
+                  - info
+                  - trips
+                  - tracedata
+                  - statistics
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                type: string
+        '500':
+          description: Internal Server Error
+          content:
+            text/plain:
+              schema:
+                type: string
+      operationId: get-executions-execution-id-results
+  '/executions/{execution-id}/path':
+    parameters:
+      - schema:
+          type: string
+        name: execution-id
+        in: path
+        required: true
+    get:
+      summary: GET Execution paths
+      tags:
+        - Executions
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                description: ''
+                minItems: 1
+                uniqueItems: true
+                items:
+                  type: object
+                  required:
+                    - id
+                    - path
+                  properties:
+                    id:
+                      type: string
+                      minLength: 1
+                    path:
+                      type: array
+                      uniqueItems: true
+                      minItems: 1
+                      items:
+                        required:
+                          - latitude
+                          - longitude
+                        properties:
+                          latitude:
+                            type: number
+                          longitude:
+                            type: number
+                x-examples:
+                  example-1:
+                    - id: b9178b4e-34d9-416c-9e27-7ef506f764a1
+                      path:
+                        - latitude: 41.33952
+                          longitude: 2.130538
+                        - latitude: 41.339495
+                          longitude: 2.130523
+                        - latitude: 41.338701
+                          longitude: 2.130024
+                        - latitude: 41.338658
+                          longitude: 2.129998
+                        - latitude: 41.33863
+                          longitude: 2.12998
+                        - latitude: 41.338531
+                          longitude: 2.129918
+                        - latitude: 41.338085
+                          longitude: 2.13119
+                        - latitude: 41.338024
+                          longitude: 2.13137
+                        - latitude: 41.33674
+                          longitude: 2.130578
+                        - latitude: 41.336689
+                          longitude: 2.130725
+                        - latitude: 41.33559
+                          longitude: 2.133863
+                        - latitude: 41.335533
+                          longitude: 2.133924
+                        - latitude: 41.335487
+                          longitude: 2.133954
+                        - latitude: 41.33544
+                          longitude: 2.133968
+                        - latitude: 41.335378
+                          longitude: 2.133973
+                        - latitude: 41.335321
+                          longitude: 2.133966
+                        - latitude: 41.335248
+                          longitude: 2.133921
+                        - latitude: 41.335206
+                          longitude: 2.133875
+                        - latitude: 41.335177
+                          longitude: 2.133835
+                        - latitude: 41.335142
+                          longitude: 2.133777
+                        - latitude: 41.33512
+                          longitude: 2.133717
+                        - latitude: 41.335081
+                          longitude: 2.133596
+                        - latitude: 41.335088
+                          longitude: 2.13355
+                        - latitude: 41.335085
+                          longitude: 2.133464
+                        - latitude: 41.335073
+                          longitude: 2.133392
+                        - latitude: 41.335037
+                          longitude: 2.133299
+                        - latitude: 41.335021
+                          longitude: 2.133251
+                        - latitude: 41.335015
+                          longitude: 2.133214
+                        - latitude: 41.33501
+                          longitude: 2.133171
+                        - latitude: 41.335008
+                          longitude: 2.133139
+                        - latitude: 41.335008
+                          longitude: 2.133079
+                        - latitude: 41.335033
+                          longitude: 2.132943
+                        - latitude: 41.33583
+                          longitude: 2.130662
+                        - latitude: 41.335893
+                          longitude: 2.130484
+                        - latitude: 41.335926
+                          longitude: 2.130415
+                        - latitude: 41.335958
+                          longitude: 2.13036
+                        - latitude: 41.336004
+                          longitude: 2.130299
+                        - latitude: 41.336068
+                          longitude: 2.130244
+                        - latitude: 41.336102
+                          longitude: 2.13023
+                        - latitude: 41.336145
+                          longitude: 2.130213
+                        - latitude: 41.336209
+                          longitude: 2.13015
+                        - latitude: 41.336254
+                          longitude: 2.130061
+                        - latitude: 41.336274
+                          longitude: 2.129958
+                        - latitude: 41.336267
+                          longitude: 2.129859
+                        - latitude: 41.336238
+                          longitude: 2.129768
+                        - latitude: 41.33623
+                          longitude: 2.129642
+                        - latitude: 41.336238
+                          longitude: 2.129554
+                        - latitude: 41.336248
+                          longitude: 2.129478
+                        - latitude: 41.336273
+                          longitude: 2.129402
+                        - latitude: 41.336831
+                          longitude: 2.127798
+                        - latitude: 41.337495
+                          longitude: 2.125887
+                        - latitude: 41.337732
+                          longitude: 2.12522
+                        - latitude: 41.337996
+                          longitude: 2.124473
+                        - latitude: 41.33836
+                          longitude: 2.123433
+                        - latitude: 41.338448
+                          longitude: 2.123224
+                        - latitude: 41.33877
+                          longitude: 2.122317
+                        - latitude: 41.339174
+                          longitude: 2.121157
+                        - latitude: 41.339441
+                          longitude: 2.120388
+                        - latitude: 41.339966
+                          longitude: 2.118875
+                        - latitude: 41.340391
+                          longitude: 2.11762
+                        - latitude: 41.340763
+                          longitude: 2.116635
+                        - latitude: 41.341368
+                          longitude: 2.114948
+                        - latitude: 41.341577
+                          longitude: 2.114443
+                        - latitude: 41.341706
+                          longitude: 2.114212
+                        - latitude: 41.34187
+                          longitude: 2.113917
+                        - latitude: 41.341966
+                          longitude: 2.113799
+                        - latitude: 41.342089
+                          longitude: 2.113651
+                        - latitude: 41.342366
+                          longitude: 2.113419
+                        - latitude: 41.342506
+                          longitude: 2.113351
+                        - latitude: 41.342625
+                          longitude: 2.113306
+                        - latitude: 41.342811
+                          longitude: 2.113249
+                        - latitude: 41.342955
+                          longitude: 2.113223
+                        - latitude: 41.343126
+                          longitude: 2.113205
+                        - latitude: 41.343274
+                          longitude: 2.11323
+                        - latitude: 41.343485
+                          longitude: 2.113266
+                        - latitude: 41.343721
+                          longitude: 2.113352
+                        - latitude: 41.344499
+                          longitude: 2.113889
+                        - latitude: 41.345036
+                          longitude: 2.114207
+                        - latitude: 41.345481
+                          longitude: 2.114292
+                        - latitude: 41.346034
+                          longitude: 2.11423
+                        - latitude: 41.346521
+                          longitude: 2.114035
+                        - latitude: 41.34696
+                          longitude: 2.113746
+                        - latitude: 41.347421
+                          longitude: 2.113659
+                        - latitude: 41.347652
+                          longitude: 2.113656
+                        - latitude: 41.347739
+                          longitude: 2.113695
+                        - latitude: 41.347898
+                          longitude: 2.113762
+                        - latitude: 41.348307
+                          longitude: 2.114094
+                        - latitude: 41.348705
+                          longitude: 2.114485
+                        - latitude: 41.349389
+                          longitude: 2.115329
+                        - latitude: 41.349406
+                          longitude: 2.11535
+                        - latitude: 41.349462
+                          longitude: 2.115392
+                        - latitude: 41.3498
+                          longitude: 2.115806
+                        - latitude: 41.350025
+                          longitude: 2.116013
+                        - latitude: 41.350127
+                          longitude: 2.116136
+                        - latitude: 41.35032
+                          longitude: 2.116259
+                        - latitude: 41.350525
+                          longitude: 2.11659
+                        - latitude: 41.350802
+                          longitude: 2.116966
+                        - latitude: 41.351469
+                          longitude: 2.118084
+                        - latitude: 41.352223
+                          longitude: 2.119163
+                        - latitude: 41.352637
+                          longitude: 2.119659
+                        - latitude: 41.35267
+                          longitude: 2.119719
+                        - latitude: 41.353448
+                          longitude: 2.120735
+                        - latitude: 41.354043
+                          longitude: 2.121521
+                        - latitude: 41.354592
+                          longitude: 2.122242
+                        - latitude: 41.354613
+                          longitude: 2.122272
+                        - latitude: 41.355166
+                          longitude: 2.123057
+                        - latitude: 41.355201
+                          longitude: 2.123107
+                        - latitude: 41.357048
+                          longitude: 2.125548
+                        - latitude: 41.357395
+                          longitude: 2.126006
+                        - latitude: 41.358259
+                          longitude: 2.127146
+                        - latitude: 41.359584
+                          longitude: 2.128914
+                        - latitude: 41.360204
+                          longitude: 2.12972
+                        - latitude: 41.360999
+                          longitude: 2.130776
+                        - latitude: 41.361166
+                          longitude: 2.130997
+                        - latitude: 41.361197
+                          longitude: 2.131043
+                        - latitude: 41.362174
+                          longitude: 2.132274
+                        - latitude: 41.36224
+                          longitude: 2.132359
+                        - latitude: 41.363255
+                          longitude: 2.133599
+                        - latitude: 41.363571
+                          longitude: 2.133964
+                        - latitude: 41.364347
+                          longitude: 2.134991
+                        - latitude: 41.364848
+                          longitude: 2.135656
+                        - latitude: 41.365067
+                          longitude: 2.135936
+                        - latitude: 41.366922
+                          longitude: 2.138421
+                        - latitude: 41.367125
+                          longitude: 2.138694
+                        - latitude: 41.367289
+                          longitude: 2.138905
+                        - latitude: 41.367406
+                          longitude: 2.139015
+                        - latitude: 41.367562
+                          longitude: 2.139219
+                        - latitude: 41.367625
+                          longitude: 2.139301
+                        - latitude: 41.367633
+                          longitude: 2.139313
+                        - latitude: 41.367653
+                          longitude: 2.139341
+                        - latitude: 41.367723
+                          longitude: 2.13943
+                        - latitude: 41.367733
+                          longitude: 2.139443
+                        - latitude: 41.367744
+                          longitude: 2.139458
+                        - latitude: 41.367868
+                          longitude: 2.139626
+                        - latitude: 41.367888
+                          longitude: 2.139649
+                        - latitude: 41.368176
+                          longitude: 2.14003
+                        - latitude: 41.368383
+                          longitude: 2.140309
+                        - latitude: 41.368436
+                          longitude: 2.140383
+                        - latitude: 41.368492
+                          longitude: 2.140453
+                        - latitude: 41.368806
+                          longitude: 2.140866
+                        - latitude: 41.369098
+                          longitude: 2.141262
+                        - latitude: 41.369283
+                          longitude: 2.1415
+                        - latitude: 41.36956
+                          longitude: 2.141864
+                        - latitude: 41.369622
+                          longitude: 2.141944
+                        - latitude: 41.369652
+                          longitude: 2.141983
+                        - latitude: 41.369679
+                          longitude: 2.14202
+                        - latitude: 41.369988
+                          longitude: 2.142443
+                        - latitude: 41.370123
+                          longitude: 2.142612
+                        - latitude: 41.370199
+                          longitude: 2.142714
+                        - latitude: 41.370394
+                          longitude: 2.14298
+                        - latitude: 41.37096
+                          longitude: 2.143733
+                        - latitude: 41.371068
+                          longitude: 2.14387
+                        - latitude: 41.371173
+                          longitude: 2.144012
+                        - latitude: 41.371765
+                          longitude: 2.144805
+                        - latitude: 41.371856
+                          longitude: 2.144926
+                        - latitude: 41.371974
+                          longitude: 2.145083
+                        - latitude: 41.372662
+                          longitude: 2.145998
+                        - latitude: 41.372693
+                          longitude: 2.14604
+                        - latitude: 41.372711
+                          longitude: 2.146062
+                        - latitude: 41.372805
+                          longitude: 2.146181
+                        - latitude: 41.372819
+                          longitude: 2.146195
+                        - latitude: 41.372792
+                          longitude: 2.146289
+                        - latitude: 41.372819
+                          longitude: 2.146447
+                        - latitude: 41.372825
+                          longitude: 2.146455
+                        - latitude: 41.372839
+                          longitude: 2.146475
+                        - latitude: 41.373207
+                          longitude: 2.146985
+                        - latitude: 41.373337
+                          longitude: 2.147172
+                        - latitude: 41.373546
+                          longitude: 2.147441
+                        - latitude: 41.373761
+                          longitude: 2.147724
+                        - latitude: 41.374041
+                          longitude: 2.148092
+                        - latitude: 41.374067
+                          longitude: 2.148127
+                        - latitude: 41.374325
+                          longitude: 2.148481
+                        - latitude: 41.37445
+                          longitude: 2.148652
+                        - latitude: 41.374474
+                          longitude: 2.148688
+                        - latitude: 41.374619
+                          longitude: 2.148966
+                        - latitude: 41.374612
+                          longitude: 2.14902
+                        - latitude: 41.374603
+                          longitude: 2.149078
+                        - latitude: 41.374612
+                          longitude: 2.14922
+                        - latitude: 41.374646
+                          longitude: 2.149364
+                        - latitude: 41.374665
+                          longitude: 2.149414
+                        - latitude: 41.374725
+                          longitude: 2.149505
+                        - latitude: 41.374749
+                          longitude: 2.149631
+                        - latitude: 41.374829
+                          longitude: 2.14975
+                        - latitude: 41.37489
+                          longitude: 2.149842
+                        - latitude: 41.374933
+                          longitude: 2.149932
+                        - latitude: 41.374956
+                          longitude: 2.150028
+                        - latitude: 41.37497
+                          longitude: 2.150086
+                        - latitude: 41.37496
+                          longitude: 2.151023
+                        - latitude: 41.374959
+                          longitude: 2.151159
+                        - latitude: 41.374957
+                          longitude: 2.151523
+                        - latitude: 41.374955
+                          longitude: 2.152145
+                        - latitude: 41.374955
+                          longitude: 2.152197
+                        - latitude: 41.374955
+                          longitude: 2.152254
+                        - latitude: 41.37495
+                          longitude: 2.152856
+                        - latitude: 41.37495
+                          longitude: 2.153075
+                        - latitude: 41.374952
+                          longitude: 2.153233
+                        - latitude: 41.374951
+                          longitude: 2.153397
+                        - latitude: 41.374951
+                          longitude: 2.153432
+                        - latitude: 41.374947
+                          longitude: 2.153716
+                        - latitude: 41.374947
+                          longitude: 2.153746
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                type: string
+        '500':
+          description: Internal Server Error
+          content:
+            text/plain:
+              schema:
+                type: string
+      operationId: get-executions-execution-id-paths
+  /area:
+    post:
+      summary: CREATE an Area
+      operationId: post-area
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAreaDTO'
+      tags:
+        - Areas
+  '/fleets/{fleet-id}/areas':
+    parameters:
+      - schema:
+          type: string
+        name: fleet-id
+        in: path
+        required: true
+    get:
+      summary: GET Areas by Fleet
+      tags:
+        - Areas
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Area'
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                type: string
+      operationId: get-fleets-fleet-id-areas
+  '/fleets/{fleet-id}/area/{area-id}':
+    parameters:
+      - schema:
+          type: string
+        name: fleet-id
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: area-id
+        in: path
+        required: true
+    delete:
+      summary: DELETE an Area
+      operationId: delete-fleets-fleet-id-area-area-id
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                type: string
+      tags:
+        - Areas
+  /orders:
+    post:
+      summary: Group Orders by Area
+      operationId: post-orders-by-area
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                type: string
+      tags:
+        - Areas
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupOrders'
+      description: ''
+  /run:
+    post:
+      summary: Run an Execution
+      operationId: post-run-execution
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  status:
+                    type: string
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                type: string
+      tags:
+        - Executions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                algorithm_id:
+                  type: string
+                config_id:
+                  type: string
+                dataset_id:
+                  type: string
+tags:
+  - name: Algorithms
+  - name: Areas
+  - name: Configs
+  - name: Datasets
+  - name: Executions
+components:
+  schemas:
+    Dataset:
+      title: Dataset
+      type: object
+      description: ''
+      properties:
+        tags:
+          type: object
+        date:
+          type: string
+          format: date
+        orders:
+          type: array
+          items:
+            $ref: '#/components/schemas/Order'
+        id:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+      required:
+        - tags
+        - date
+        - orders
+        - id
+        - created_at
+    CreateDatasetDTO:
+      title: CreateDatasetDTO
+      type: object
+      properties:
+        tags:
+          type: object
+        orders:
+          type: array
+          items:
+            $ref: '#/components/schemas/Order'
+        date:
+          type: string
+          format: date
+      required:
+        - tags
+        - orders
+        - date
+      description: ''
+    Order:
+      description: ''
+      type: object
+      x-examples:
+        example-1:
+          delivery:
+            location:
+              address: Avinguda del Paral-lel 185 08004 Barcelona
+              latitude: 41.3749
+              longitude: 2.153746
+            service_time: 300
+            soft_time_window:
+              end: '00:00:00'
+              start: '00:00:00'
+            time_window:
+              end: '14:00:00'
+              start: '10:00:00'
+          id: '10001'
+          packages: []
+          pickup:
+            location:
+              address: >-
+                Parc Logistic de la Zona Franca, avinguda numero 4 08040
+                Barcelona
+              latitude: 41.339631187207594
+              longitude: 2.130208649490328
+            service_time: 0
+            soft_time_window:
+              end: '00:00:00'
+              start: '00:00:00'
+            time_window:
+              end: '14:00:00'
+              start: '10:00:00'
+      properties:
+        delivery:
+          type: object
+          required:
+            - location
+          properties:
+            location:
+              type: object
+              required:
+                - address
+                - latitude
+                - longitude
+              properties:
+                address:
+                  type: string
+                  minLength: 1
+                latitude:
+                  type: number
+                longitude:
+                  type: number
+            service_time:
+              type: number
+            soft_time_window:
+              type: object
+              properties:
+                end:
+                  type: string
+                  minLength: 1
+                start:
+                  type: string
+                  minLength: 1
+            time_window:
+              type: object
+              properties:
+                end:
+                  type: string
+                  minLength: 1
+                start:
+                  type: string
+                  minLength: 1
+        id:
+          type: string
+        packages:
+          type: array
+          items:
+            type: object
+            properties:
+              volume:
+                type: string
+            required:
+              - volume
+        pickup:
+          type: object
+          properties:
+            location:
+              type: object
+              properties:
+                address:
+                  type: string
+                  minLength: 1
+                latitude:
+                  type: number
+                longitude:
+                  type: number
+            service_time:
+              type: number
+            soft_time_window:
+              type: object
+              properties:
+                end:
+                  type: string
+                  minLength: 1
+                start:
+                  type: string
+                  minLength: 1
+            time_window:
+              type: object
+              properties:
+                end:
+                  type: string
+                  minLength: 1
+                start:
+                  type: string
+                  minLength: 1
+        date:
+          type: string
+          format: date
+      required:
+        - delivery
+        - id
+        - packages
+        - pickup
+        - date
+    CreateConfigDTO:
+      title: CreateConfigDTO
+      type: object
+      properties:
+        vehicles:
+          type: array
+          items:
+            $ref: '#/components/schemas/Vehicle'
+    Config:
+      title: Config
+      type: object
+      description: ''
+      properties:
+        id:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        vehicles:
+          type: array
+          items:
+            $ref: '#/components/schemas/Vehicle'
+      required:
+        - id
+        - created_at
+        - vehicles
+    Algorithm:
+      description: ''
+      type: object
+      x-examples:
+        example-1:
+          created_at: '2021-10-06 10:06:51.951432 +0000 UTC'
+          id: 6f001108-4fa4-4572-83a6-1e7f0caad36a
+          name: veeroute
+          parameters:
+            allow_tolls: true
+            compress_delivery_time: true
+            configuration: optimize_locality_grouping
+            max_timeout: 10800
+          version: sparse-compress-3h
+      properties:
+        created_at:
+          type: string
+          format: date-time
+        id:
+          type: string
+        name:
+          type: string
+        version:
+          type: string
+        parameters:
+          type: object
+      required:
+        - created_at
+        - id
+        - name
+        - version
+        - parameters
+    CreateAlgorithmDTO:
+      description: ''
+      type: object
+      x-examples:
+        example-1:
+          created_at: '2021-10-06 10:06:51.951432 +0000 UTC'
+          id: 6f001108-4fa4-4572-83a6-1e7f0caad36a
+          name: veeroute
+          parameters:
+            allow_tolls: true
+            compress_delivery_time: true
+            configuration: optimize_locality_grouping
+            max_timeout: 10800
+          version: sparse-compress-3h
+      properties:
+        name:
+          type: string
+        version:
+          type: string
+        parameters:
+          type: object
+      required:
+        - name
+        - version
+        - parameters
+    Route:
+      description: ''
+      type: object
+      x-examples:
+        example-1:
+          id: b9178b4e-34d9-416c-9e27-7ef506f764a1
+          path: []
+          actions:
+            - order_id: '10001'
+              type: pickup
+              distance: 0
+              location:
+                latitude: 41.339631187207594
+                longitude: 2.130208649490328
+                address: ''
+              eta: '2021-09-21T13:49:00Z'
+              service_time: 0
+              transport_time: 0
+              waiting_time: 0
+            - order_id: '10001'
+              type: delivery
+              distance: 6833
+              location:
+                latitude: 41.3749
+                longitude: 2.153746
+                address: ''
+              eta: '2021-09-21T14:00:00Z'
+              service_time: 300
+              transport_time: 660
+              waiting_time: 0
+          starting_location:
+            latitude: 41.339631187207594
+            longitude: 2.130208649490328
+            address: ''
+          start_time: '2021-09-21T13:49:00Z'
+          created_at: '2021-10-14T13:51:15.463034Z'
+      properties:
+        id:
+          type: string
+          minLength: 1
+        path:
+          type: array
+          items:
+            type: object
+        actions:
+          type: array
+          uniqueItems: true
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/Action'
+        starting_location:
+          type: object
+          required:
+            - latitude
+            - longitude
+            - address
+          properties:
+            latitude:
+              type: number
+            longitude:
+              type: number
+            address:
+              type: string
+        start_time:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+      required:
+        - id
+        - path
+        - actions
+        - starting_location
+        - start_time
+        - created_at
+    Execution:
+      title: Execution
+      type: object
+      properties:
+        id:
+          type: string
+        dataset_id:
+          type: string
+        config_id:
+          type: string
+        algorithm_id:
+          type: string
+        routes_kpis:
+          type: array
+          items:
+            type: object
+            properties:
+              route_id:
+                type: string
+              orders:
+                type: integer
+              distance:
+                type: number
+              working_hours:
+                type: number
+              transport_hours:
+                type: number
+              waiting_hours:
+                type: number
+              productivity:
+                type: number
+              service_hours:
+                type: number
+              distance_from_first_delivery:
+                type: number
+              working_hours_from_first_delivery:
+                type: number
+              transport_hours_from_first_delivery:
+                type: number
+              waiting_hours_from_first_delivery:
+                type: number
+              productivity_from_first_delivery:
+                type: number
+            required:
+              - route_id
+              - orders
+              - distance
+              - working_hours
+              - transport_hours
+              - waiting_hours
+              - productivity
+              - service_hours
+              - distance_from_first_delivery
+              - working_hours_from_first_delivery
+              - transport_hours_from_first_delivery
+              - waiting_hours_from_first_delivery
+              - productivity_from_first_delivery
+        global_kpis:
+          type: object
+          properties:
+            total_routes:
+              type: integer
+            assigned_orders:
+              type: integer
+            unassigned_orders:
+              type: integer
+            unexpected_orders:
+              type: integer
+            total_orders:
+              type: integer
+            total_distance:
+              type: number
+            total_working_hours:
+              type: number
+            total_waiting_hours:
+              type: number
+            total_transport_hours:
+              type: number
+            productivity:
+              type: number
+            total_service_hours:
+              type: number
+            total_distance_from_first_delivery:
+              type: number
+            total_working_hours_from_first_delivery:
+              type: number
+            total_waiting_hours_from_first_delivery:
+              type: number
+            total_transport_hours_from_first_delivery:
+              type: number
+            productivity_from_first_delivery:
+              type: number
+          required:
+            - total_routes
+            - assigned_orders
+            - unassigned_orders
+            - unexpected_orders
+            - total_orders
+            - total_distance
+            - total_working_hours
+            - total_waiting_hours
+            - total_transport_hours
+            - productivity
+            - total_service_hours
+            - total_distance_from_first_delivery
+            - total_working_hours_from_first_delivery
+            - total_waiting_hours_from_first_delivery
+            - total_transport_hours_from_first_delivery
+            - productivity_from_first_delivery
+        status:
+          type: string
+        result:
+          type: object
+        created_at:
+          type: string
+        updated_at:
+          type: string
+      required:
+        - id
+        - dataset_id
+        - config_id
+        - algorithm_id
+        - status
+        - created_at
+        - updated_at
+    Vehicle:
+      description: ''
+      type: object
+      x-examples:
+        example-1:
+          capacity: 10000
+          max_distance: 20000
+          max_locations: 0
+          max_number_orders: 0
+          max_working_time: 36000
+          start_location:
+            address: 'Parc Logistic de la Zona Franca, avinguda numero 4'
+            latitude: 41.3396312
+            longitude: 2.1302086
+          start_time: '08:00:00'
+          type: truck
+      properties:
+        capacity:
+          type: number
+        max_distance:
+          type: number
+        max_locations:
+          type: number
+        max_number_orders:
+          type: number
+        max_working_time:
+          type: number
+        start_location:
+          type: object
+          required:
+            - address
+            - latitude
+            - longitude
+          properties:
+            address:
+              type: string
+            latitude:
+              type: number
+            longitude:
+              type: number
+        start_time:
+          type: string
+        type:
+          type: string
+      required:
+        - capacity
+        - max_distance
+        - max_locations
+        - max_number_orders
+        - max_working_time
+        - start_location
+        - start_time
+        - type
+    Action:
+      description: ''
+      type: object
+      x-examples:
+        example-1:
+          order_id: '10001'
+          type: delivery
+          distance: 6833
+          location:
+            latitude: 41.3749
+            longitude: 2.153746
+            address: ''
+          eta: '2021-09-21T14:00:00Z'
+          service_time: 300
+          transport_time: 660
+          waiting_time: 0
+      properties:
+        order_id:
+          type: string
+        type:
+          type: string
+        distance:
+          type: number
+        location:
+          type: object
+          required:
+            - latitude
+            - longitude
+            - address
+          properties:
+            latitude:
+              type: number
+            longitude:
+              type: number
+            address:
+              type: string
+        eta:
+          type: string
+          format: date-time
+        service_time:
+          type: number
+        transport_time:
+          type: number
+        waiting_time:
+          type: number
+      required:
+        - order_id
+        - type
+        - distance
+        - location
+        - eta
+        - service_time
+        - transport_time
+        - waiting_time
+    Area:
+      description: ''
+      type: object
+      x-examples:
+        example-1:
+          city: Barcelona
+          country: Spain
+          created_at: '2021-10-22 14:18:12.300549 +0000 UTC'
+          fleet_id: 4c912413-df99-491f-a751-a2c04e6c3e5d
+          id: 42ed6e4f-c5c9-4076-8cb3-86512a9dd854
+          name: Barcelona sud 2
+          polygon:
+            - latitude: 2.4122019
+              longitude: 42.6462929
+            - latitude: 2.33575
+              longitude: 42.8419006
+            - latitude: 1.9700022
+              longitude: 42.7359236
+            - latitude: 1.9700022
+              longitude: 42.5686676
+            - latitude: 2.4122019
+              longitude: 42.6461929
+          updated_at: '2021-10-22 14:18:12.300549 +0000 UTC'
+      properties:
+        city:
+          type: string
+        country:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        fleet_id:
+          type: string
+        id:
+          type: string
+        name:
+          type: string
+        polygon:
+          type: array
+          uniqueItems: true
+          items:
+            type: object
+            properties:
+              latitude:
+                type: number
+              longitude:
+                type: number
+            required:
+              - latitude
+              - longitude
+        updated_at:
+          type: string
+          format: date-time
+      required:
+        - created_at
+        - fleet_id
+        - id
+        - name
+        - polygon
+        - updated_at
+    CreateAreaDTO:
+      description: ''
+      type: object
+      x-examples:
+        example-1:
+          city: Barcelona
+          country: Spain
+          created_at: '2021-10-22 14:18:12.300549 +0000 UTC'
+          fleet_id: 4c912413-df99-491f-a751-a2c04e6c3e5d
+          id: 42ed6e4f-c5c9-4076-8cb3-86512a9dd854
+          name: Barcelona sud 2
+          polygon:
+            - latitude: 2.4122019
+              longitude: 42.6462929
+            - latitude: 2.33575
+              longitude: 42.8419006
+            - latitude: 1.9700022
+              longitude: 42.7359236
+            - latitude: 1.9700022
+              longitude: 42.5686676
+            - latitude: 2.4122019
+              longitude: 42.6461929
+          updated_at: '2021-10-22 14:18:12.300549 +0000 UTC'
+      properties:
+        city:
+          type: string
+        country:
+          type: string
+        fleet_id:
+          type: string
+        name:
+          type: string
+        polygon:
+          type: array
+          uniqueItems: true
+          items:
+            type: object
+            properties:
+              latitude:
+                type: number
+              longitude:
+                type: number
+            required:
+              - latitude
+              - longitude
+      required:
+        - fleet_id
+        - name
+        - polygon
+    GroupOrders:
+      title: GroupOrders
+      type: object
+      properties:
+        fleet_id:
+          type: string
+        orders:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              coordinate:
+                type: object
+                required:
+                  - latitude
+                  - longitude
+                properties:
+                  latitude:
+                    type: number
+                  longitude:
+                    type: number
+            required:
+              - id
+              - coordinate
+      required:
+        - fleet_id
+        - orders
